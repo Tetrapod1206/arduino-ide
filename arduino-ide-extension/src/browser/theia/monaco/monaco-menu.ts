@@ -1,9 +1,13 @@
 import type { MenuModelRegistry } from '@theia/core/lib/common/menu/menu-model-registry';
 import { injectable } from '@theia/core/shared/inversify';
 import { MonacoEditorMenuContribution as TheiaMonacoEditorMenuContribution } from '@theia/monaco/lib/browser/monaco-menu';
+import { EditContributions } from '../../contributions/edit-contributions';
+import { nls } from '@theia/core/lib/common';
+
 
 @injectable()
 export class MonacoEditorMenuContribution extends TheiaMonacoEditorMenuContribution {
+  
   override registerMenus(registry: MenuModelRegistry): void {
     super.registerMenus(registry);
     // https://github.com/arduino/arduino-ide/issues/1394
@@ -20,5 +24,14 @@ export class MonacoEditorMenuContribution extends TheiaMonacoEditorMenuContribut
     registry.unregisterMenuAction('editor.action.peekTypeDefinition'); // Peek Type Definition
     registry.unregisterMenuAction('editor.action.peekImplementation'); // Peek Implementation
     registry.unregisterMenuAction('editor.action.referenceSearch.trigger'); // Peek References
+
+    //#2445, add comment/uncomment to right click menu
+    registry.registerMenuAction(EditorMainMenu.LANGUAGE_FEATURES_GROUP, {
+      commandId: EditContributions.Commands.TOGGLE_COMMENT,
+      label: nls.localize(
+        'arduino/editor/commentUncomment',
+        'Comment/Uncomment'
+      )
+    });
   }
 }
